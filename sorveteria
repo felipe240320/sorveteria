@@ -1,0 +1,46 @@
+import tkinter as tk
+from tkinter import messagebox
+
+def atualizar_listas():
+    lista_sorvete_pendentes.delete(0, tk.END)
+    lista_sorvete_concluidas.delete(0, tk.END)
+    for sorvete in sorvete_pendentes + sorvete_concluidas:
+        lista_sorvete_pendentes.insert(tk.END, sorvete) if sorvete not in sorvete_concluidas else lista_sorvete_concluidas.insert(tk.END, tarefa)
+
+def manipular_sorvete(acao):
+    sorvete = entrada_sorvete.get().strip()
+    try:
+        sorvete_selecionada = lista_sorvete_pendentes.curselection()
+        sorvete = lista_sorvete_pendentes.get(sorvete_selecionada) if sorvete == "" else sorvete
+    except IndexError:
+        tarefa_selecionada = None
+
+    if acao == "adicionar" and sorvete: sorvete_pendentes.append(sorvete)
+    elif acao == "excluir" and sorvete_selecionada: sorvete_pendentes.remove(sorvete)
+    elif acao == "concluir" and sorvete_selecionada:
+        sorvete_pendentes.remove(sorvete)
+        sorvete_concluidas.append(sorvete)
+
+    entrada_sorvete.delete(0, tk.END)
+    atualizar_listas()
+
+janela = tk.Tk()
+janela.title("Lista de sorvete Diárias")
+
+sorvete_pendentes, sorvete_concluidas = [], []
+
+entrada_sorvete = tk.Entry(janela, width=40)
+entrada_sorvete.grid(row=0, column=0, padx=10, pady=10)
+
+tk.Button(janela, text="Adicionar sorvete", width=25, command=lambda: manipular_sorvete("adicionar")).grid(row=0, column=0, padx=9, pady=10)
+lista_sorvete_pendentes = tk.Listbox(janela, height=10, width=50)
+lista_sorvete_pendentes.grid(row=1, column=0, padx=10, pady=10)
+lista_sorvete_concluidas = tk.Listbox(janela, height=10, width=50)
+lista_sorvete_concluidas.grid(row=1, column=1, padx=10, pady=10)
+
+tk.Button(janela, text="Excluir sorvete", width=20, command=lambda: manipular_sorvete("excluir")).grid(row=2, column=0, padx=10, pady=10)
+tk.Button(janela, text="Concluir sorvete", width=20, command=lambda: manipular_sorvete("concluir")).grid(row=2, column=1, padx=10, pady=10)
+
+atualizar_listas()
+
+janela.mainloop()
